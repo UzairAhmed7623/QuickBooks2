@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="15dp"
     tools:context=".CreateAccount">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/textView"
@@ -19,7 +24,11 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="App name"
+        android:layout_marginTop="14dp"
+        android:text="Quick Books 2"
+        android:fontFamily="@font/avenir_next_demi"
+        android:textColor="@color/black"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -30,86 +39,110 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:text="Create your account."
+        android:textSize="18sp"
+        android:fontFamily="@font/avenir_next_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tvEmailPlace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
         android:text="Email"
+        android:textColor="@color/black"
+        android:fontFamily="@font/avenir_next_rg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
         android:layout_marginEnd="13dp"
         android:hint="You'll verify this later"
         android:inputType="textEmailAddress"
+        android:fontFamily="@font/avenir_next_rg"
+        android:focusable="false"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/tvEmailPlace" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tvPasswordPlace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="7dp"
         android:text="Password"
+        android:fontFamily="@font/avenir_next_rg"
+        android:textColor="@color/black"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
         android:layout_marginEnd="13dp"
         android:hint="Don't reuse passwords"
-        android:inputType="textEmailAddress"
+        android:inputType="textPassword"
+        android:fontFamily="@font/avenir_next_rg"
+        android:focusable="false"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPasswordPlace" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/tvConfirmPasswordPlace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="7dp"
         android:text="Confirm Password"
+        android:fontFamily="@font/avenir_next_rg"
+        android:textColor="@color/black"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText4" />
+        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/etConfirmPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
         android:layout_marginEnd="13dp"
         android:hint="Re-enter password"
-        android:inputType="textEmailAddress"
+        android:inputType="textPassword"
+        android:fontFamily="@font/avenir_next_rg"
+        android:focusable="false"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/tvConfirmPasswordPlace" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/tvPhonePlace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="7dp"
         android:text="Phone"
-        android:textSize="16sp"
+        android:fontFamily="@font/avenir_next_rg"
+        android:textColor="@color/black"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSelectCountry"
@@ -122,20 +155,23 @@
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:drawableEnd="@drawable/arrow_drop_down"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPhonePlace" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/etPhone"
         android:layout_width="0dp"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="13dp"
-        android:layout_marginTop="7dp"
         android:layout_marginStart="16dp"
         android:hint="For passwords and security"
         android:inputType="textEmailAddress"
+        android:fontFamily="@font/avenir_next_rg"
+        android:focusable="false"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnSelectCountry"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPhonePlace" />
 
     <TextView
         android:id="@+id/textView7"
@@ -146,22 +182,64 @@
         android:layout_marginStart="16dp"
         android:text="Standard calling, messaging or data rates may apply."
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="16sp"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        app:layout_constraintTop_toBottomOf="@+id/etPhone" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCreateAccount"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="13dp"
         app:cornerRadius="0dp"
         android:text="Create Account"
-       android:drawableLeft="@drawable/lock"
+        android:textAlignment="center"
+        android:fontFamily="@font/avenir_next_medium"
+        android:gravity="center"
+        app:iconGravity="start"
+        app:icon="@drawable/lock"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="13dp"
+        android:textAlignment="center"
+        android:text="By tapping Create Account, you agree to our Terms and have read acknowledge our Global Privacy Statement."
+        android:textSize="12sp"
+        android:fontFamily="@font/avenir_next_rg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCreateAccount" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="13dp"
+        android:text="Already have an Account? Sign in"
+        android:textColor="#595959"
+        android:textSize="18sp"
+        android:fontFamily="@font/avenir_next_rg"
+        android:textAlignment="center"
+        android:letterSpacing="-0.03"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -1,14 +1,19 @@
 package com.quickbooks2;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.quickbooks2.Models.CountryCodeModel;
@@ -18,10 +23,12 @@ import java.util.ArrayList;
 
 public class CreateAccount extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    private MaterialButton btnSelectCountry;
+    private MaterialButton btnSelectCountry, btnCreateAccount;
     private CountryCodeSpinnerAdapter adapter;
     private final ArrayList<CountryCodeModel> arrayList = new ArrayList<>();
     private Dialog listDialog;
+    private TextView tvEmailPlace, tvPasswordPlace, tvConfirmPasswordPlace, tvPhonePlace;
+    private EditText etEmail, etPassword, etConfirmPassword, etPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,118 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
         setContentView(R.layout.activity_create_account);
 
         btnSelectCountry = findViewById(R.id.btnSelectCountry);
+        tvEmailPlace = findViewById(R.id.tvEmailPlace);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        etPhone = findViewById(R.id.etPhone);
+        tvPasswordPlace = findViewById(R.id.tvPasswordPlace);
+        tvConfirmPasswordPlace = findViewById(R.id.tvConfirmPasswordPlace);
+        tvPhonePlace = findViewById(R.id.tvPhonePlace);
+
+
+        etEmail.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, @SuppressLint("ClickableViewAccessibility") MotionEvent event) {
+                etEmail.setFocusable(true);
+                etEmail.setFocusableInTouchMode(true);
+                return false;
+            }
+        });
+        etEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+
+                if (b){
+                    tvEmailPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
+                }
+                else {
+                    etEmail.setFocusable(false);
+                    etEmail.setFocusableInTouchMode(false);
+                    tvEmailPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
+                }
+            }
+        });
+
+        etPassword.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, @SuppressLint("ClickableViewAccessibility") MotionEvent event) {
+                etPassword.setFocusable(true);
+                etPassword.setFocusableInTouchMode(true);
+                return false;
+            }
+        });
+
+        etPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+
+                if (b){
+
+                    tvPasswordPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
+                }
+                else {
+                    etPassword.setFocusable(false);
+                    etPassword.setFocusableInTouchMode(false);
+                    tvPasswordPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
+                }
+            }
+        });
+
+        etConfirmPassword.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, @SuppressLint("ClickableViewAccessibility") MotionEvent event) {
+                etConfirmPassword.setFocusable(true);
+                etConfirmPassword.setFocusableInTouchMode(true);
+                return false;
+            }
+        });
+
+        etConfirmPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+
+                if (b){
+
+                    tvConfirmPasswordPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
+                }
+                else {
+                    etConfirmPassword.setFocusable(false);
+                    etConfirmPassword.setFocusableInTouchMode(false);
+                    tvConfirmPasswordPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
+                }
+            }
+        });
+
+        etPhone.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, @SuppressLint("ClickableViewAccessibility") MotionEvent event) {
+                etPhone.setFocusable(true);
+                etPhone.setFocusableInTouchMode(true);
+                return false;
+            }
+        });
+
+        etPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+
+                if (b){
+
+                    tvPhonePlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
+                }
+                else {
+                    etPhone.setFocusable(false);
+                    etPhone.setFocusableInTouchMode(false);
+                    tvPhonePlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
+                }
+            }
+        });
+
 
         {
             arrayList.clear();
@@ -276,7 +395,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
             arrayList.add(new CountryCodeModel("ax", "Åland Islands", "+358", "🇦🇽"));
         }
 
-        btnSelectCountry.setText(arrayList.get(0).getCountryFlag());
+        btnSelectCountry.setText(arrayList.get(0).getCountryFlag() + " " + arrayList.get(0).getPhoneCode());
         btnSelectCountry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
