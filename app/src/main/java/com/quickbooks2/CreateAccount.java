@@ -1,33 +1,34 @@
 package com.quickbooks2;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
 import com.quickbooks2.Models.CountryCodeModel;
 import com.quickbooks2.Models.CountryCodeSpinnerAdapter;
 
 import java.util.ArrayList;
 
-public class CreateAccount extends AppCompatActivity {
+public class CreateAccount extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    //Spinner work
-    private Spinner spinner;
+    private MaterialButton btnSelectCountry;
     private CountryCodeSpinnerAdapter adapter;
     private final ArrayList<CountryCodeModel> arrayList = new ArrayList<>();
-
+    private Dialog listDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
-        spinner = findViewById(R.id.spinnerid);
+        btnSelectCountry = findViewById(R.id.btnSelectCountry);
 
         {
             arrayList.clear();
@@ -275,20 +276,40 @@ public class CreateAccount extends AppCompatActivity {
             arrayList.add(new CountryCodeModel("ax", "Åland Islands", "+358", "🇦🇽"));
         }
 
-        adapter = new CountryCodeSpinnerAdapter(CreateAccount.this,arrayList);
-        spinner.setAdapter(adapter);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        btnSelectCountry.setText(arrayList.get(0).getCountryFlag());
+        btnSelectCountry.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                CountryCodeModel countryModel = (CountryCodeModel) adapterView.getAdapter().getItem(position);
-                Log.d("spinnerItem", countryModel.getPhoneCode());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onClick(View view) {
+                showdialog();
             }
         });
+    }
+
+    private void showdialog() {
+        listDialog = new Dialog(this);
+        listDialog.setTitle("Select Item");
+        View v = getLayoutInflater().inflate(R.layout.dialog_list, null, false);
+        listDialog.setContentView(v);
+        listDialog.setCancelable(true);
+        //there are a lot of settings, for dialog, check them all out!
+
+        ListView list = (ListView) listDialog.findViewById(R.id.listview);
+
+        list.setOnItemClickListener(this);
+        adapter = new CountryCodeSpinnerAdapter(CreateAccount.this,arrayList);
+        list.setAdapter(adapter);
+
+        //now that the dialog is set up, it's time to show it
+        listDialog.show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+        CountryCodeModel countryModel = (CountryCodeModel) adapterView.getAdapter().getItem(position);
+        Log.d("spinnerItem", countryModel.getPhoneCode());
+
+        btnSelectCountry.setText(countryModel.getCountryFlag()+" "+countryModel.getPhoneCode());
+        listDialog.dismiss();
     }
 }

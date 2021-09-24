@@ -46,10 +46,11 @@ public class CountryCodeSpinnerAdapter extends ArrayAdapter<CountryCodeModel> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.spinner_item, null);
         TextView tvCountryName = (TextView) row.findViewById(R.id.tvCountryName);
+        TextView tvCountryCode = (TextView) row.findViewById(R.id.tvCountryCode);
 
-        String countryData = arrayList.get(position).getCountryFlag() + " (" + arrayList.get(position).getPhoneCode() + ")";
+        String countryData = arrayList.get(position).getCountryFlag() + arrayList.get(position).getCountryName();
         tvCountryName.setText(countryData);
-//        i1.setImageResource(images[position]);
+        tvCountryCode.setText(arrayList.get(position).getPhoneCode());
         return row;
     }
 }
