@@ -1,25 +1,43 @@
 package com.quickbooks2;
 
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.common.AccountPicker;
 import com.google.android.material.button.MaterialButton;
 import com.quickbooks2.Models.CountryCodeModel;
 import com.quickbooks2.Models.CountryCodeSpinnerAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CreateAccount extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -29,7 +47,24 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
     private Dialog listDialog;
     private TextView tvEmailPlace, tvPasswordPlace, tvConfirmPasswordPlace, tvPhonePlace;
     private EditText etEmail, etPassword, etConfirmPassword, etPhone;
+    private String valid_email = "";
+    private TextView tvCondition1, tvCondition2, tvCondition3, tvCondition4;
+    private ConstraintLayout constraintLayout;
+    private static final String SPECIAL_CHARACTERS = ".+[!,#,$,%,^,&,*,|.+]";
 
+
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+
+                    if (result.getResultCode() == RESULT_OK) {
+                        String accountName = result.getData().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                        etEmail.setText(accountName);
+                    }
+                }
+            });
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +78,13 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
         etPhone = findViewById(R.id.etPhone);
         tvPasswordPlace = findViewById(R.id.tvPasswordPlace);
         tvConfirmPasswordPlace = findViewById(R.id.tvConfirmPasswordPlace);
+        constraintLayout = findViewById(R.id.constraintLayout);
         tvPhonePlace = findViewById(R.id.tvPhonePlace);
+        tvCondition1 = findViewById(R.id.tvCondition1);
+        tvCondition2 = findViewById(R.id.tvCondition2);
+        tvCondition3 = findViewById(R.id.tvCondition3);
+        tvCondition4 = findViewById(R.id.tvCondition4);
+
 
 
         etEmail.setOnTouchListener(new View.OnTouchListener() {
@@ -60,6 +101,14 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
             public void onFocusChange(View view, boolean b) {
 
                 if (b){
+                    if (etEmail.getText().length() <= 0){
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                            Intent intent = AccountManager.newChooseAccountIntent(null, null,
+                                    new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE }, null,
+                                    null, null, null);
+                            launcher.launch(intent);                        }
+                    }
                     tvEmailPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
                 }
                 else {
@@ -69,6 +118,45 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 }
             }
         });
+        etEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                Is_Valid_Email(etEmail); // pass your EditText Obj here.
+
+            }
+            public void Is_Valid_Email(EditText edt) {
+                if (edt.getText().toString() == null) {
+                    edt.setError("Invalid Email Address");
+                    valid_email = null;
+                }
+                else if (isEmailValid(edt.getText().toString()) == false) {
+                    edt.setError("Invalid Email Address");
+                    valid_email = null;
+                }
+                else {
+                    valid_email = edt.getText().toString();
+                    etEmail.setCompoundDrawablesWithIntrinsicBounds(null, null , ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
+                }
+            }
+
+            boolean isEmailValid(CharSequence email) {
+                return android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                        .matches();
+            } // end of TextWatcher (email)
+        });
+
+
 
         etPassword.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
@@ -79,22 +167,100 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 return false;
             }
         });
-
         etPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
 
                 if (b){
-
+                    constraintLayout.setVisibility(View.VISIBLE);
                     tvPasswordPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
                 }
                 else {
+                    constraintLayout.setVisibility(View.GONE);
                     etPassword.setFocusable(false);
                     etPassword.setFocusableInTouchMode(false);
                     tvPasswordPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
                 }
             }
         });
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if (etPassword.getText().toString().length() > 0){
+                    etPassword.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.closed_lock), null);
+                }
+                else {
+                    etPassword.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.lock_open), null);
+                }
+
+                if (validPassword(etPassword.getText().toString())){
+                    etPassword.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.checked_lock), null);
+                    tvConfirmPasswordPlace.setVisibility(View.VISIBLE);
+                    etPassword.setVisibility(View.VISIBLE);
+                }
+                else {
+                    tvConfirmPasswordPlace.setVisibility(View.GONE);
+                    etPassword.setVisibility(View.GONE);
+                }
+            }
+
+            public boolean validPassword(String password){
+                boolean upCase = false;
+                boolean loCase = false;
+                boolean isDigit = false;
+                boolean spChar = false;
+                boolean greaterThen8 = false;
+
+                if (password.length()>7){
+                    if (password.matches(".+[A-Z].+")){
+                        upCase = true;
+                        tvCondition2.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
+                        tvCondition2.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
+                    }
+                    if (password.matches(".+[a-z].+")){
+                        loCase = true;
+                        tvCondition2.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
+                        tvCondition2.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
+                    }
+                    if (password.matches(".+[1-9].+")){
+                        isDigit = true;
+                        tvCondition3.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
+                        tvCondition3.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
+                    }
+                    if (SPECIAL_CHARACTERS.contains(password)){
+                        spChar = true;
+                        tvCondition4.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
+                        tvCondition4.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
+                    }
+                    if (password.length() > 8){
+                        greaterThen8 = true;
+                        tvCondition1.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
+                        tvCondition1.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
+                    }
+                }
+                return (upCase && loCase && isDigit && spChar && greaterThen8);
+            }
+        });
+
 
         etConfirmPassword.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
@@ -105,7 +271,6 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 return false;
             }
         });
-
         etConfirmPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -131,7 +296,6 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 return false;
             }
         });
-
         etPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {

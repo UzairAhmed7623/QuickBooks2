@@ -3,6 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/drawable/arrow_drop_down.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/drawable/check.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/drawable/check_circle.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/drawable/checked_lock.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/drawable/closed_lock.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/drawable/cross.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/drawable/ic_outline_lock_24.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/drawable/lock.xml" value="0.37135416666666665" />
+        <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/drawable/lock_open.xml" value="0.37135416666666665" />
         <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/layout/activity_create_account.xml" value="0.33" />
         <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/layout/activity_main.xml" value="0.72" />
         <entry key="..\:/Users/hafiz/AndroidStudioProjects/QuickBooks2/app/src/main/res/layout/activity_on_boarding_screens.xml" value="0.35520833333333335" />
