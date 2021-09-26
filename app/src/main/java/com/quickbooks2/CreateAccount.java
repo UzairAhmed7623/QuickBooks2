@@ -50,8 +50,6 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
     private String valid_email = "";
     private TextView tvCondition1, tvCondition2, tvCondition3, tvCondition4;
     private ConstraintLayout constraintLayout;
-    private static final String SPECIAL_CHARACTERS = ".+[!,#,$,%,^,&,*,|.+]";
-
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -196,6 +194,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
 
             @Override
             public void afterTextChanged(Editable editable) {
+                Log.d("asdfgh", "onTextChanged: "+editable.toString());
 
                 if (etPassword.getText().toString().length() > 0){
                     etPassword.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -210,11 +209,14 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                     etPassword.setCompoundDrawablesWithIntrinsicBounds(null, null,
                             ContextCompat.getDrawable(CreateAccount.this, R.drawable.checked_lock), null);
                     tvConfirmPasswordPlace.setVisibility(View.VISIBLE);
-                    etPassword.setVisibility(View.VISIBLE);
+                    etConfirmPassword.setVisibility(View.VISIBLE);
                 }
                 else {
+
+                    etPassword.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.closed_lock), null);
                     tvConfirmPasswordPlace.setVisibility(View.GONE);
-                    etPassword.setVisibility(View.GONE);
+                    etConfirmPassword.setVisibility(View.GONE);
                 }
             }
 
@@ -225,38 +227,56 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 boolean spChar = false;
                 boolean greaterThen8 = false;
 
-                if (password.length()>7){
-                    if (password.matches(".+[A-Z].+")){
+                Pattern specailCharPatten = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+                Pattern UpperCasePatten = Pattern.compile("[A-Z ]");
+                Pattern lowerCasePatten = Pattern.compile("[a-z ]");
+                Pattern digitCasePatten = Pattern.compile("[0-9 ]");
+
+                    if (UpperCasePatten.matcher(password).find() && lowerCasePatten.matcher(password).find()){
                         upCase = true;
-                        tvCondition2.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
-                        tvCondition2.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
-                    }
-                    if (password.matches(".+[a-z].+")){
                         loCase = true;
                         tvCondition2.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
-                        tvCondition2.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
+                        tvCondition2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.check),
+                                null, null, null);
                     }
-                    if (password.matches(".+[1-9].+")){
+                    else {
+                        tvCondition2.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
+                        tvCondition2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.cross),
+                                null, null, null);
+                    }
+                    if (digitCasePatten.matcher(password).find()){
                         isDigit = true;
                         tvCondition3.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
-                        tvCondition3.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
+                        tvCondition3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.check),
+                                null, null,null);
                     }
-                    if (SPECIAL_CHARACTERS.contains(password)){
+                    else {
+                        tvCondition3.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
+                        tvCondition3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.cross),
+                                null, null, null);
+                    }
+                    if (specailCharPatten.matcher(password).find()){
                         spChar = true;
                         tvCondition4.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
-                        tvCondition4.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
+                        tvCondition4.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.check),
+                                null, null,null);
+                    }
+                    else {
+                        tvCondition4.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
+                        tvCondition4.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.cross),
+                                null, null,null);
                     }
                     if (password.length() > 8){
                         greaterThen8 = true;
                         tvCondition1.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
-                        tvCondition1.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                ContextCompat.getDrawable(CreateAccount.this, R.drawable.check), null);
+                        tvCondition1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.check),
+                                null, null,null);
                     }
-                }
+                    else {
+                        tvCondition1.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
+                        tvCondition1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.cross),
+                                null, null,null);
+                    }
                 return (upCase && loCase && isDigit && spChar && greaterThen8);
             }
         });
