@@ -8,6 +8,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,6 +33,9 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.material.button.MaterialButton;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.quickbooks2.Models.CountryCodeModel;
 import com.quickbooks2.Models.CountryCodeSpinnerAdapter;
 
@@ -50,6 +55,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
     private String valid_email = "";
     private TextView tvCondition1, tvCondition2, tvCondition3, tvCondition4;
     private ConstraintLayout constraintLayout;
+    private String countryCode = "+93", phone = "";
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -144,7 +150,8 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 }
                 else {
                     valid_email = edt.getText().toString();
-                    etEmail.setCompoundDrawablesWithIntrinsicBounds(null, null , ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
+                    etEmail.setCompoundDrawablesWithIntrinsicBounds(null, null ,
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
                 }
             }
 
@@ -153,8 +160,6 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                         .matches();
             } // end of TextWatcher (email)
         });
-
-
 
         etPassword.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
@@ -266,7 +271,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                         tvCondition4.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.cross),
                                 null, null,null);
                     }
-                    if (password.length() > 8){
+                    if (password.length() >= 8){
                         greaterThen8 = true;
                         tvCondition1.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
                         tvCondition1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.check),
@@ -280,7 +285,6 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 return (upCase && loCase && isDigit && spChar && greaterThen8);
             }
         });
-
 
         etConfirmPassword.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
@@ -304,6 +308,28 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                     etConfirmPassword.setFocusableInTouchMode(false);
                     tvConfirmPasswordPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
                 }
+            }
+        });
+        etConfirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (etPassword.getText().toString().equals(charSequence.toString())){
+                    etConfirmPassword.setCompoundDrawablesWithIntrinsicBounds(null, null ,
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
+                }
+                else {
+                    etConfirmPassword.setCompoundDrawablesWithIntrinsicBounds(null, null , null ,null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
@@ -331,6 +357,70 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 }
             }
         });
+        etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        etPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                if (isPhoneNumberValid(charSequence.toString(), countryCode) != null){
+                    etPhone.setCompoundDrawablesWithIntrinsicBounds(null, null ,
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
+
+
+                    phone = isPhoneNumberValid(charSequence.toString(), countryCode);
+                    Log.d("phoneNum1", phone);
+
+                }
+                else {
+                    etPhone.setCompoundDrawablesWithIntrinsicBounds(null, null , null,null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+
+            public String isPhoneNumberValid(String phoneNumber, String countryCode) {
+
+                PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+
+                Phonenumber.PhoneNumber phoneNumber1 = null;
+                String finalNumber = null;
+                String isoCode = phoneNumberUtil.getRegionCodeForCountryCode(Integer.parseInt(countryCode));
+                boolean isValid = false;
+                PhoneNumberUtil.PhoneNumberType isMobile = null;
+
+                //NOTE: This should probably be a member variable.
+                PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+
+                try
+                {
+                    phoneNumber1 = phoneNumberUtil.parse(phoneNumber, isoCode);
+                    isValid = phoneNumberUtil.isValidNumber(phoneNumber1);
+                    isMobile = phoneNumberUtil.getNumberType(phoneNumber1);
+
+                }
+                catch (NumberParseException e) {
+                    Log.d("phoneNum2", e.getMessage());
+                }
+                if (isValid && (PhoneNumberUtil.PhoneNumberType.MOBILE == isMobile || PhoneNumberUtil.PhoneNumberType.FIXED_LINE_OR_MOBILE == isMobile)) {
+                    finalNumber = phoneNumberUtil.format(phoneNumber1,
+                            PhoneNumberUtil.PhoneNumberFormat.E164).substring(1);
+                }
+
+                String phone = String.valueOf(finalNumber);
+                Log.d("phoneNum3", phone);
+
+                return finalNumber;
+            }
+        });
+
 
 
         {
@@ -612,7 +702,8 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
         CountryCodeModel countryModel = (CountryCodeModel) adapterView.getAdapter().getItem(position);
         Log.d("spinnerItem", countryModel.getPhoneCode());
 
-        btnSelectCountry.setText(countryModel.getCountryFlag()+" "+countryModel.getPhoneCode());
+        btnSelectCountry.setText(countryModel.getCountryFlag() + " " + countryModel.getPhoneCode());
+        countryCode = countryModel.getPhoneCode();
         listDialog.dismiss();
     }
 }
