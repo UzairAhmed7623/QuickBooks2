@@ -306,18 +306,18 @@
         app:layout_constraintTop_toBottomOf="@+id/btnCreateAccount" />
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/tvSignIn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="13dp"
-        android:text="Already have an Account? Sign in"
-        android:textColor="#595959"
+        android:text="Already have an Account?  Sign in"
+        android:textColor="#7F7F7F"
         android:textSize="18sp"
         android:fontFamily="@font/avenir_next_rg"
         android:textAlignment="center"
-        android:letterSpacing="-0.03"
+        android:letterSpacing="-0.02"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

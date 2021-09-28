@@ -2,16 +2,18 @@ package com.quickbooks2;
 
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,13 +27,12 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.common.AccountPicker;
 import com.google.android.material.button.MaterialButton;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -40,8 +41,6 @@ import com.quickbooks2.Models.CountryCodeModel;
 import com.quickbooks2.Models.CountryCodeSpinnerAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CreateAccount extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -50,12 +49,14 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
     private CountryCodeSpinnerAdapter adapter;
     private final ArrayList<CountryCodeModel> arrayList = new ArrayList<>();
     private Dialog listDialog;
-    private TextView tvEmailPlace, tvPasswordPlace, tvConfirmPasswordPlace, tvPhonePlace;
+    private TextView tvEmailPlace, tvPasswordPlace, tvConfirmPasswordPlace, tvPhonePlace, tvSignIn;
     private EditText etEmail, etPassword, etConfirmPassword, etPhone;
-    private String valid_email = "";
+    private String valid_email = "", password = "";
     private TextView tvCondition1, tvCondition2, tvCondition3, tvCondition4;
     private ConstraintLayout constraintLayout;
     private String countryCode = "+93", phone = "";
+    private SpannableString spannableString;
+    private ProgressDialog progressDialog;
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -75,6 +76,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
         setContentView(R.layout.activity_create_account);
 
         btnSelectCountry = findViewById(R.id.btnSelectCountry);
+        btnCreateAccount = findViewById(R.id.btnCreateAccount);
         tvEmailPlace = findViewById(R.id.tvEmailPlace);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
@@ -88,7 +90,24 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
         tvCondition2 = findViewById(R.id.tvCondition2);
         tvCondition3 = findViewById(R.id.tvCondition3);
         tvCondition4 = findViewById(R.id.tvCondition4);
+        tvSignIn = findViewById(R.id.tvSignIn);
 
+        String myString = "Already have an Account?  Sign in";
+        spannableString = new SpannableString(myString);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                startActivity(new Intent(CreateAccount.this, FingerPrintLogin.class));
+            }
+            @Override
+            public void updateDrawState(@NonNull TextPaint textPaint) {
+                super.updateDrawState(textPaint);
+                textPaint.setUnderlineText(false);
+            }
+        };
+        spannableString.setSpan(clickableSpan, 25, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvSignIn.setText(spannableString);
+        tvSignIn.setMovementMethod(LinkMovementMethod.getInstance());
 
 
         etEmail.setOnTouchListener(new View.OnTouchListener() {
@@ -151,7 +170,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 else {
                     valid_email = edt.getText().toString();
                     etEmail.setCompoundDrawablesWithIntrinsicBounds(null, null ,
-                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle_finger) ,null);
                 }
             }
 
@@ -300,13 +319,16 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
             public void onFocusChange(View view, boolean b) {
 
                 if (b){
-
                     tvConfirmPasswordPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
                 }
                 else {
                     etConfirmPassword.setFocusable(false);
                     etConfirmPassword.setFocusableInTouchMode(false);
                     tvConfirmPasswordPlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
+
+                    if (!etPassword.getText().toString().equals(etConfirmPassword.getText().toString())){
+                        etConfirmPassword.setError("Confirmation password does not match. Please make sure password and confirmation password are the same.");
+                    }
                 }
             }
         });
@@ -320,10 +342,12 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (etPassword.getText().toString().equals(charSequence.toString())){
                     etConfirmPassword.setCompoundDrawablesWithIntrinsicBounds(null, null ,
-                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle_finger) ,null);
+                    password = etPassword.getText().toString();
                 }
                 else {
                     etConfirmPassword.setCompoundDrawablesWithIntrinsicBounds(null, null , null ,null);
+                    password = "";
                 }
             }
 
@@ -347,7 +371,6 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
             public void onFocusChange(View view, boolean b) {
 
                 if (b){
-
                     tvPhonePlace.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.main_color));
                 }
                 else {
@@ -369,7 +392,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
 
                 if (isPhoneNumberValid(charSequence.toString(), countryCode) != null){
                     etPhone.setCompoundDrawablesWithIntrinsicBounds(null, null ,
-                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle_finger) ,null);
 
 
                     phone = isPhoneNumberValid(charSequence.toString(), countryCode);
@@ -378,6 +401,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 }
                 else {
                     etPhone.setCompoundDrawablesWithIntrinsicBounds(null, null , null,null);
+                    phone = "";
                 }
             }
 
@@ -420,8 +444,6 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                 return finalNumber;
             }
         });
-
-
 
         {
             arrayList.clear();
@@ -669,11 +691,27 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
             arrayList.add(new CountryCodeModel("ax", "Åland Islands", "+358", "🇦🇽"));
         }
 
-        btnSelectCountry.setText(arrayList.get(0).getCountryFlag() + " " + arrayList.get(0).getPhoneCode());
+        btnSelectCountry.setText(arrayList.get(0).getCountryFlag() + "   " + arrayList.get(0).getPhoneCode());
         btnSelectCountry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showdialog();
+            }
+        });
+
+        progressDialog = new ProgressDialog(CreateAccount.this);
+        progressDialog.setMessage("Signing In");
+
+        btnCreateAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (valid_email.equals("") || password.equals("") || phone.equals("")){
+                    Toast.makeText(CreateAccount.this, "All fields are required.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Log.d("allCredentials", "Email: " + valid_email +" Password: "+password+" Phone: "+phone);
+                    progressDialog.show();
+                }
             }
         });
     }
@@ -702,8 +740,32 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
         CountryCodeModel countryModel = (CountryCodeModel) adapterView.getAdapter().getItem(position);
         Log.d("spinnerItem", countryModel.getPhoneCode());
 
-        btnSelectCountry.setText(countryModel.getCountryFlag() + " " + countryModel.getPhoneCode());
+        btnSelectCountry.setText(countryModel.getCountryFlag() + "   " + countryModel.getPhoneCode());
         countryCode = countryModel.getPhoneCode();
         listDialog.dismiss();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (progressDialog != null){
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progressDialog != null){
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (progressDialog != null){
+            progressDialog.dismiss();
+        }
     }
 }

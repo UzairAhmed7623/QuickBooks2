@@ -3,7 +3,11 @@
     package="com.quickbooks2">
 
     <uses-permission
-        android:name="android.permission.GET_ACCOUNTS" android:maxSdkVersion="22" />
+        android:name="android.permission.GET_ACCOUNTS"
+        android:maxSdkVersion="22" />
+
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
 
     <application
         android:allowBackup="true"
@@ -12,6 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QuickBooks2">
+        <activity
+            android:name=".FingerPrintLogin"
+            android:exported="true" />
         <activity
             android:name=".SignIn"
             android:exported="true" />

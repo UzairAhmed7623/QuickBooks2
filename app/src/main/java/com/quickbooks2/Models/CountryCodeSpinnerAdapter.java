@@ -48,7 +48,7 @@ public class CountryCodeSpinnerAdapter extends ArrayAdapter<CountryCodeModel> {
         TextView tvCountryName = (TextView) row.findViewById(R.id.tvCountryName);
         TextView tvCountryCode = (TextView) row.findViewById(R.id.tvCountryCode);
 
-        String countryData = arrayList.get(position).getCountryFlag() + arrayList.get(position).getCountryName();
+        String countryData = arrayList.get(position).getCountryFlag() + "  " + arrayList.get(position).getCountryName();
         tvCountryName.setText(countryData);
         tvCountryCode.setText(arrayList.get(position).getPhoneCode());
         return row;
