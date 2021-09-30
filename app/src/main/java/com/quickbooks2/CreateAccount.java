@@ -160,17 +160,20 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
             }
             public void Is_Valid_Email(EditText edt) {
                 if (edt.getText().toString() == null) {
-                    edt.setError("Invalid Email Address");
+                    etEmail.setCompoundDrawablesWithIntrinsicBounds(null, null ,
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.error_icon) ,null);
                     valid_email = null;
                 }
-                else if (isEmailValid(edt.getText().toString()) == false) {
-                    edt.setError("Invalid Email Address");
+                else if (!isEmailValid(edt.getText().toString())) {
+                    etEmail.setCompoundDrawablesWithIntrinsicBounds(null, null ,
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.error_icon) ,null);
                     valid_email = null;
                 }
                 else {
                     valid_email = edt.getText().toString();
+                    edt.setError(null);
                     etEmail.setCompoundDrawablesWithIntrinsicBounds(null, null ,
-                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle_finger) ,null);
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
                 }
             }
 
@@ -342,7 +345,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (etPassword.getText().toString().equals(charSequence.toString())){
                     etConfirmPassword.setCompoundDrawablesWithIntrinsicBounds(null, null ,
-                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle_finger) ,null);
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
                     password = etPassword.getText().toString();
                 }
                 else {
@@ -392,7 +395,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
 
                 if (isPhoneNumberValid(charSequence.toString(), countryCode) != null){
                     etPhone.setCompoundDrawablesWithIntrinsicBounds(null, null ,
-                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle_finger) ,null);
+                            ContextCompat.getDrawable(CreateAccount.this, R.drawable.check_circle) ,null);
 
 
                     phone = isPhoneNumberValid(charSequence.toString(), countryCode);
@@ -705,7 +708,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (valid_email.equals("") || password.equals("") || phone.equals("")){
+                if (valid_email == null || valid_email.equals("") || password == null || password.equals("") || phone == null || phone.equals("")){
                     Toast.makeText(CreateAccount.this, "All fields are required.", Toast.LENGTH_SHORT).show();
                 }
                 else {
