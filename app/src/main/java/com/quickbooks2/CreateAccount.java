@@ -266,7 +266,7 @@ public class CreateAccount extends AppCompatActivity implements AdapterView.OnIt
                         tvCondition2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.check),
                                 null, null, null);
                     }
-                    else {
+                    else{
                         tvCondition2.setTextColor(ContextCompat.getColor(CreateAccount.this, R.color.black));
                         tvCondition2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(CreateAccount.this, R.drawable.cross),
                                 null, null, null);
